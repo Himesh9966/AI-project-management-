@@ -8,18 +8,23 @@
  * Defines the navigation tree and protects authenticated routes from unauthorized access.
  */
 
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
-// We will import pages here once created
-import Login from '../pages/Login';
-import Register from '../pages/Register';
-import Dashboard from '../pages/Dashboard';
-import Projects from '../pages/Projects';
-import ProjectDetails from '../pages/ProjectDetails';
-import AIPlanner from '../pages/AIPlanner';
-import AIChat from '../pages/AIChat';
+const Login = lazy(() => import('../pages/Login'));
+const Register = lazy(() => import('../pages/Register'));
+const Dashboard = lazy(() => import('../pages/Dashboard'));
+const Projects = lazy(() => import('../pages/Projects'));
+const ProjectDetails = lazy(() => import('../pages/ProjectDetails'));
+const AIPlanner = lazy(() => import('../pages/AIPlanner'));
+const AIChat = lazy(() => import('../pages/AIChat'));
+
+const PageLoader = () => (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh', color: 'var(--text-secondary)' }}>
+    <h2>Loading...</h2>
+  </div>
+);
 
 // Layout wrapper for authenticated pages (e.g. Navigation bar)
 const ProtectedLayout = () => {
@@ -52,20 +57,22 @@ export default function AppRoutes() {
   if (loading) return <div>Initializing...</div>;
 
   return (
-    <Routes>
-      <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
-      <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
-      <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+        <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
+        <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
 
-      <Route element={<ProtectedLayout />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/projects/:id" element={<ProjectDetails />} />
-        <Route path="/ai-planner" element={<AIPlanner />} />
-        <Route path="/projects/:id/mentor" element={<AIChat />} />
-      </Route>
-      
-      <Route path="*" element={<div>404 Page Not Found</div>} />
-    </Routes>
+        <Route element={<ProtectedLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:id" element={<ProjectDetails />} />
+          <Route path="/ai-planner" element={<AIPlanner />} />
+          <Route path="/projects/:id/mentor" element={<AIChat />} />
+        </Route>
+        
+        <Route path="*" element={<div>404 Page Not Found</div>} />
+      </Routes>
+    </Suspense>
   );
 }
