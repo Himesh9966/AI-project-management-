@@ -14,16 +14,14 @@
  */
 
 const path = require('path');
-const dotenv = require('dotenv');
-
-// Load environment variables from root .env file
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+// Import central Environment variables & secrets management configuration
+const config = require('./config/env');
 
 const app = require('./app');
 const { connectMongoDB } = require('./config/mongodb');
 const { connectPostgres } = require('./config/postgres');
 
-const PORT = process.env.PORT || 5001;
+const PORT = config.port;
 
 // Initialize Database Connections
 const startServer = async () => {

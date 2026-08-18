@@ -82,7 +82,7 @@ This table maps the grading rubric directly to the codebase implementation for q
 | **Form validation (0.2 pts • Frontend)** | React Pages | `client/src/pages/Register.jsx` | Explicit React state-based validation before form submission (e.g., password length, email format). |
 | **Git workflow (0.3 pts • Engineering Practices)** | CI/CD Workflows | `.github/workflows/main.yml` | Fully configured GitHub Actions pipeline running dependency installs and test suites on pushes/PRs to main. |
 | **Frontend deployment (0.2 pts • Frontend)** | Vercel Configuration | `vercel.json` | Ready for Vercel deployment with correct build commands and routing rules for Single Page Applications. |
-| **Environment variables & secrets management (0.2 pts • Engineering Practices)** | Global configuration | `.env.example` | Secrets (e.g. `LLM_API_KEY`) are managed strictly through environment variables. |
+| **Environment variables & secrets management (0.2 pts • Engineering Practices)** | Config Module | `server/config/env.js` | Centralized loading, validation, and failure-fast assertions for all application secrets. |
 | **Responsive layout & styling competence (0.2 pts • Frontend)** | CSS System | `client/src/index.css` | Employs CSS Variables, Flexbox, and CSS Grid ensuring the UI adapts gracefully to varying screen sizes. |
 | **Request body validation (0.2 pts • Backend & System Design)** | Validation Middleware | `server/middleware/validationMiddleware.js` | Server explicitly rejects malformed request bodies before they reach the controller layer. |
 | **LLM API Integration** | AI Controllers & Services | `server/services/aiService.js` | Direct integration with `@google/generative-ai` securely isolated in backend. |
