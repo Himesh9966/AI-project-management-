@@ -63,6 +63,23 @@ const AIConversationSchema = new mongoose.Schema(
 
 AIConversationSchema.index({ project: 1, user: 1 });
 
+// Aggregation pipelines
+// This static method uses a NoSQL (Mongo) aggregation pipeline to aggregate conversation metrics.
+AIConversationSchema.statics.getConversationStats = async function (projectId) {
+  return this.aggregate([
+    { $match: { project: new mongoose.Types.ObjectId(projectId) } },
+    { $unwind: "$messages" },
+    { $group: {
+        _id: "$messages.role",
+        messageCount: { $sum: 1 },
+        lastInteraction: { $max: "$messages.timestamp" }
+      }
+    },
+    { $sort: { messageCount: -1 } }
+  ]);
+};
+
 const AIConversation = mongoose.model('AIConversation', AIConversationSchema);
 
 module.exports = AIConversation;
+

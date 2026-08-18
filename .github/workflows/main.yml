@@ -1,0 +1,32 @@
+name: Node.js CI (Git Workflow)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'npm'
+        cache-dependency-path: 'server/package-lock.json'
+    
+    - name: Install server dependencies
+      run: cd server && npm ci
+      
+    - name: Run backend tests
+      run: cd server && npm test --if-present
+
+    - name: Install client dependencies
+      run: cd client && npm ci
+      
+    - name: Build frontend
+      run: cd client && npm run build

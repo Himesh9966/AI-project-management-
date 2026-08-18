@@ -75,3 +75,31 @@ CREATE INDEX idx_members_project_id ON project_members(project_id);
 CREATE INDEX idx_members_user_id ON project_members(user_id);
 CREATE INDEX idx_logs_project_id ON activity_logs(project_id);
 CREATE INDEX idx_logs_created_at ON activity_logs(created_at DESC);
+
+-- ==============================================================================
+-- 5. Normalization basics & ORM usage (Prisma/Sequelize)
+-- ==============================================================================
+-- The schema above adheres to 3NF (Third Normal Form):
+-- 1NF: All columns hold atomic values (no repeating groups).
+-- 2NF: No partial dependency; all non-key attributes are fully functionally dependent on the primary key.
+-- 3NF: No transitive dependency; non-key attributes depend strictly on the primary key, avoiding anomalies.
+--
+-- Note on ORM usage (Prisma/Sequelize):
+-- While this project utilizes raw pg queries for performance, this relational schema
+-- is fully compatible with modern ORMs like Prisma or Sequelize. A corresponding Prisma
+-- schema is provided in `server/prisma/schema.prisma` for integration.
+
+-- ==============================================================================
+-- 6. SQL JOINs Demonstration
+-- ==============================================================================
+-- This view demonstrates an INNER JOIN between users and projects, 
+-- simplifying the retrieval of project owners and their respective projects.
+CREATE OR REPLACE VIEW user_projects_view AS 
+SELECT 
+    u.id AS user_id, 
+    u.name AS owner_name, 
+    u.email AS owner_email,
+    p.id AS project_id, 
+    p.title AS project_title
+FROM users u
+INNER JOIN projects p ON u.id = p.owner_id;

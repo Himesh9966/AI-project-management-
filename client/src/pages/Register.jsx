@@ -17,11 +17,23 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    const errors = {};
+    if (!name.trim()) errors.name = "Name is required.";
+    if (!email.includes('@')) errors.email = "Please enter a valid email address.";
+    if (password.length < 6) errors.password = "Password must be at least 6 characters long.";
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; // Form validation failed
+    
     try {
       await register(name, email, password);
       navigate('/dashboard');

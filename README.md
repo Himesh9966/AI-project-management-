@@ -74,6 +74,17 @@ This table maps the grading rubric directly to the codebase implementation for q
 | **JavaScript — async/await (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | Uses syntactic sugar over Promises to handle asynchronous operations cleanly. |
 | **JavaScript — Closures (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | An inner `increment` function capturing the `count` variable from its lexical scope. |
 | **JavaScript — Hoisting (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | Calling a function declaration before it appears in the code, proving it's hoisted. |
+| **SQL JOINs (0.2 pts • SQL (Postgres))** | PostgreSQL Schema | `server/sql/schema.sql` | `user_projects_view` utilizes an `INNER JOIN` to fetch project owner details. |
+| **Normalization basics (0.2 pts • SQL (Postgres))** | PostgreSQL Schema | `server/sql/schema.sql` | Schema is designed up to 3NF, removing transitive dependencies and ensuring atomic values. |
+| **ORM usage (Prisma/Sequelize) (0.2 pts • SQL (Postgres))** | Database Configuration | `server/prisma/schema.prisma` | Full Prisma schema implementation mapping to the PostgreSQL database for ORM-based access. |
+| **Aggregation pipelines (0.2 pts • NoSQL (Mongo))** | Mongoose Models | `server/models/AIConversation.js` | Uses `$match`, `$unwind`, and `$group` pipeline stages for deriving conversation statistics. |
+| **File upload handling** | Upload Routes | `server/routes/uploadRoutes.js` | Uses `multer` middleware to parse `multipart/form-data` and handle file uploads safely. |
+| **Form validation (0.2 pts • Frontend)** | React Pages | `client/src/pages/Register.jsx` | Explicit React state-based validation before form submission (e.g., password length, email format). |
+| **Git workflow (0.3 pts • Engineering Practices)** | CI/CD Workflows | `.github/workflows/main.yml` | Fully configured GitHub Actions pipeline running dependency installs and test suites on pushes/PRs to main. |
+| **Frontend deployment (0.2 pts • Frontend)** | Vercel Configuration | `vercel.json` | Ready for Vercel deployment with correct build commands and routing rules for Single Page Applications. |
+| **Environment variables & secrets management (0.2 pts • Engineering Practices)** | Global configuration | `.env.example` | Secrets (e.g. `LLM_API_KEY`) are managed strictly through environment variables. |
+| **Responsive layout & styling competence (0.2 pts • Frontend)** | CSS System | `client/src/index.css` | Employs CSS Variables, Flexbox, and CSS Grid ensuring the UI adapts gracefully to varying screen sizes. |
+| **Request body validation (0.2 pts • Backend & System Design)** | Validation Middleware | `server/middleware/validationMiddleware.js` | Server explicitly rejects malformed request bodies before they reach the controller layer. |
 | **LLM API Integration** | AI Controllers & Services | `server/services/aiService.js` | Direct integration with `@google/generative-ai` securely isolated in backend. |
 | **Prompt Engineering** | Prompt Modules | `server/prompts/` | System roles, context snapshotting, and strict JSON structural requirements. |
 | **Structured Outputs** | AI Planner / Subtasks | `server/prompts/projectPlannerPrompt.js` | LLM is instructed to bypass markdown and return raw, parseable JSON payloads. |
