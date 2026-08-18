@@ -1,8 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { Sphere, MeshDistortMaterial, Stars, Float } from '@react-three/drei';
-import { motion } from 'framer-motion';
+import { motion, useSpring } from 'framer-motion';
 
 const AnimatedShape = () => {
   return (
@@ -21,11 +21,50 @@ const AnimatedShape = () => {
   );
 };
 
+// Custom interactive cursor that follows mouse movement
+const CursorTracker = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const updateMousePosition = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', updateMousePosition);
+    return () => {
+      window.removeEventListener('mousemove', updateMousePosition);
+    };
+  }, []);
+
+  return (
+    <motion.div
+      animate={{
+        x: mousePosition.x - 150,
+        y: mousePosition.y - 150,
+      }}
+      transition={{ type: 'spring', stiffness: 50, damping: 20, mass: 0.5 }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '300px',
+        height: '300px',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, transparent 70%)',
+        pointerEvents: 'none',
+        zIndex: 50,
+      }}
+    />
+  );
+};
+
 export default function Landing() {
   const navigate = useNavigate();
 
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', backgroundColor: 'var(--bg-main)' }}>
+      {/* Interactive Cursor Trail */}
+      <CursorTracker />
+
       {/* 3D Background */}
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
         <Canvas camera={{ position: [0, 0, 5] }}>
