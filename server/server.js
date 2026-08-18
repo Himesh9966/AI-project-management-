@@ -25,15 +25,15 @@ const PORT = config.port;
 
 // Initialize Database Connections
 const startServer = async () => {
-  console.log('⏳ Initializing Database Connections...');
+  console.log('Initializing Database Connections...');
   await connectMongoDB();
   await connectPostgres();
 
   const server = app.listen(PORT, () => {
     console.log(`====================================================`);
-    console.log(`🚀 AI Project Mentor Server running on port ${PORT}`);
-    console.log(`🌐 Healthcheck: http://localhost:${PORT}/health`);
-    console.log(`⚙️  Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`AI Project Mentor Server running on port ${PORT}`);
+    console.log(`Healthcheck: http://localhost:${PORT}/health`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`====================================================`);
   });
 

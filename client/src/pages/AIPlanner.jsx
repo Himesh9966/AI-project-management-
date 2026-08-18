@@ -11,6 +11,13 @@
 import React, { useState } from 'react';
 import * as api from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
+const pageVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, staggerChildren: 0.1 } },
+  exit: { opacity: 0, y: -20, transition: { duration: 0.3 } }
+};
 
 export default function AIPlanner() {
   const [idea, setIdea] = useState('');
@@ -65,65 +72,79 @@ export default function AIPlanner() {
   };
 
   return (
-    <div>
-      <h1 style={{ marginBottom: '1rem', background: 'linear-gradient(135deg, #6366f1, #0ea5e9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-        AI Project Planner
-      </h1>
-      <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-        Describe your idea and the AI Mentor will generate a structured MVP plan with tasks.
-      </p>
+    <motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit" style={{ position: 'relative' }}>
+      
+      {/* Background Glow */}
+      <div style={{ position: 'absolute', top: '10%', right: '10%', width: '400px', height: '400px', background: 'var(--primary)', filter: 'blur(200px)', opacity: 0.15, borderRadius: '50%', zIndex: -1, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: '10%', left: '10%', width: '400px', height: '400px', background: 'var(--accent)', filter: 'blur(200px)', opacity: 0.15, borderRadius: '50%', zIndex: -1, pointerEvents: 'none' }} />
 
-      <form onSubmit={handleGenerate} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+      <motion.h1 variants={pageVariants} style={{ fontSize: '3rem', marginBottom: '1rem', background: 'linear-gradient(to right, var(--primary), var(--secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 0 15px rgba(0,240,255,0.2))' }}>
+        AI Project Planner
+      </motion.h1>
+      <motion.p variants={pageVariants} style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', marginBottom: '3rem' }}>
+        Describe your idea and the AI Mentor will generate a structured MVP plan with tasks.
+      </motion.p>
+
+      <motion.form variants={pageVariants} onSubmit={handleGenerate} className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '3rem', padding: '2rem' }}>
         <textarea
           value={idea}
           onChange={(e) => setIdea(e.target.value)}
           placeholder="e.g., I want to build a food delivery application using the MERN stack..."
-          style={{ width: '100%', minHeight: '120px', padding: '1rem', background: 'var(--bg-card)', color: 'white', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)' }}
+          style={{ width: '100%', minHeight: '150px', padding: '1.5rem', background: 'var(--bg-input)', color: 'white', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', fontSize: '1.1rem' }}
           required
         />
-        <button 
+        <motion.button 
+          whileHover={!loading ? { scale: 1.02, boxShadow: 'var(--shadow-glow)' } : {}}
+          whileTap={!loading ? { scale: 0.98 } : {}}
           type="submit" 
           disabled={loading}
-          style={{ padding: '0.75rem 1.5rem', background: 'var(--primary)', color: 'white', borderRadius: 'var(--radius-sm)', width: 'fit-content', opacity: loading ? 0.7 : 1 }}
+          style={{ padding: '1rem 2rem', background: 'linear-gradient(45deg, var(--primary-dark), var(--primary))', color: '#fff', borderRadius: 'var(--radius-sm)', width: 'fit-content', opacity: loading ? 0.7 : 1, fontWeight: 600, fontSize: '1.1rem' }}
         >
-          {loading ? 'Generating Plan...' : 'Generate Plan'}
-        </button>
-      </form>
+          {loading ? 'Analyzing & Generating Plan...' : 'Generate Plan'}
+        </motion.button>
+      </motion.form>
 
-      {error && <div style={{ color: 'var(--danger)', marginBottom: '1rem' }}>{error}</div>}
+      {error && <motion.div variants={pageVariants} style={{ color: 'var(--danger)', marginBottom: '1rem', background: 'rgba(255,0,85,0.1)', padding: '1rem', borderRadius: 'var(--radius-sm)' }}>{error}</motion.div>}
 
       {plan && (
-        <div style={{ background: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)' }}>
+        <motion.div variants={pageVariants} className="glass-card" style={{ padding: '3rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <h2>{plan.projectTitle}</h2>
-              <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}>{plan.summary}</p>
+              <h2 style={{ fontSize: '2.5rem', color: 'var(--primary)' }}>{plan.projectTitle}</h2>
+              <p style={{ color: 'var(--text-secondary)', marginTop: '1rem', fontSize: '1.1rem', maxWidth: '800px' }}>{plan.summary}</p>
             </div>
-            <button onClick={handleCreateProject} style={{ padding: '0.5rem 1rem', background: 'var(--success)', color: 'white', borderRadius: 'var(--radius-sm)' }}>
+            <motion.button 
+              whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(0, 255, 170, 0.4)' }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleCreateProject} 
+              style={{ padding: '1rem 2rem', background: 'linear-gradient(45deg, #00cc88, var(--success))', color: 'var(--bg-main)', borderRadius: 'var(--radius-full)', fontWeight: 'bold', fontSize: '1.1rem' }}
+            >
               Create as Project
-            </button>
+            </motion.button>
           </div>
 
-          <div style={{ margin: '1.5rem 0' }}>
-            <strong>Suggested Tech Stack: </strong>
-            {plan.techStack?.map(t => <span key={t} style={{ marginLeft: '0.5rem', padding: '0.2rem 0.5rem', background: 'var(--bg-main)', borderRadius: 'var(--radius-full)', fontSize: '0.8rem' }}>{t}</span>)}
+          <div style={{ margin: '2.5rem 0' }}>
+            <strong style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}>Suggested Tech Stack: </strong>
+            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+              {plan.techStack?.map(t => <span key={t} style={{ padding: '0.5rem 1rem', background: 'rgba(0, 240, 255, 0.1)', color: 'var(--primary)', border: '1px solid var(--primary-light)', borderRadius: 'var(--radius-full)', fontWeight: 500 }}>{t}</span>)}
+            </div>
           </div>
 
-          <h3>Recommended Tasks</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
+          <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', marginTop: '3rem' }}>Recommended Tasks</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {plan.tasks.map((task, idx) => (
-              <div key={idx} style={{ background: 'var(--bg-main)', padding: '1rem', borderRadius: 'var(--radius-sm)' }}>
-                <h4 style={{ color: 'var(--secondary)' }}>{task.title}</h4>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.25rem' }}>{task.description}</p>
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', fontSize: '0.8rem' }}>
-                  <span>Priority: {task.priority}</span>
-                  <span>Est. Hours: {task.estimatedHours}</span>
+              <motion.div key={idx} whileHover={{ x: 5 }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-color)', padding: '1.5rem', borderRadius: 'var(--radius-md)' }}>
+                <h4 style={{ color: 'var(--text-primary)', fontSize: '1.2rem', marginBottom: '0.5rem' }}>{task.title}</h4>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '1rem' }}>{task.description}</p>
+                <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem', fontSize: '0.9rem' }}>
+                  <span style={{ color: 'var(--warning)', background: 'rgba(255, 170, 0, 0.1)', padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-full)' }}>Priority: {task.priority}</span>
+                  <span style={{ color: 'var(--info)', background: 'rgba(0, 187, 255, 0.1)', padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-full)' }}>Est. Hours: {task.estimatedHours}</span>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }

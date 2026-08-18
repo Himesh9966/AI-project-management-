@@ -25,7 +25,7 @@ const config = require('./env');
  */
 const connectMongoDB = async () => {
   if (isConnected) {
-    console.log('⚡ MongoDB is already connected.');
+    console.log('MongoDB is already connected.');
     return mongoose;
   }
 
@@ -38,22 +38,22 @@ const connectMongoDB = async () => {
     });
 
     isConnected = !!conn.connections[0].readyState;
-    console.log(`🍃 MongoDB Connected: ${conn.connection.host}/${conn.connection.name}`);
+    console.log(`MongoDB Connected: ${conn.connection.host}/${conn.connection.name}`);
     return conn;
   } catch (error) {
-    console.error(`⚠️ MongoDB Connection Warning: ${error.message}`);
-    console.log('ℹ️  Note: Ensure MongoDB is running locally on port 27017, or specify MONGO_URI in .env');
+    console.error(`MongoDB Connection Warning: ${error.message}`);
+    console.log('Note: Ensure MongoDB is running locally on port 27017, or specify MONGO_URI in .env');
     return null;
   }
 };
 
 mongoose.connection.on('disconnected', () => {
   isConnected = false;
-  console.warn('⚠️ MongoDB connection disconnected.');
+  console.warn('MongoDB connection disconnected.');
 });
 
 mongoose.connection.on('error', (err) => {
-  console.error('❌ MongoDB connection error:', err.message);
+  console.error('MongoDB connection error:', err.message);
 });
 
 module.exports = {

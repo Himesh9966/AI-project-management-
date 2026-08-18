@@ -25,7 +25,7 @@ const pool = new Pool({
 });
 
 pool.on('error', (err) => {
-  console.error('❌ Unexpected error on idle PostgreSQL client:', err.message);
+  console.error('Unexpected error on idle PostgreSQL client:', err.message);
 });
 
 /**
@@ -37,11 +37,11 @@ const connectPostgres = async () => {
     const client = await pool.connect();
     const result = await client.query('SELECT NOW() AS current_time');
     client.release();
-    console.log(`🐘 PostgreSQL Connected successfully at: ${result.rows[0].current_time}`);
+    console.log(`PostgreSQL Connected successfully at: ${result.rows[0].current_time}`);
     return true;
   } catch (error) {
-    console.warn(`⚠️ PostgreSQL Connection Warning: ${error.message}`);
-    console.log('ℹ️  Note: Ensure PostgreSQL is running on port 5432 or check POSTGRES_URI in .env');
+    console.warn(`PostgreSQL Connection Warning: ${error.message}`);
+    console.log('Note: Ensure PostgreSQL is running on port 5432 or check POSTGRES_URI in .env');
     return false;
   }
 };

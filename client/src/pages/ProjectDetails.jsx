@@ -12,6 +12,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTasks } from '../hooks/useTasks';
 import * as api from '../services/api';
+import { motion } from 'framer-motion';
+
+const pageVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, staggerChildren: 0.1 } },
+  exit: { opacity: 0, y: -20, transition: { duration: 0.3 } }
+};
 
 export default function ProjectDetails() {
   const { id } = useParams();
@@ -48,59 +55,64 @@ export default function ProjectDetails() {
   if (!project) return <div>Project not found</div>;
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <button onClick={() => navigate('/projects')} style={{ background: 'transparent', color: 'var(--text-secondary)', padding: 0 }}>&larr; Back to Projects</button>
-        <button onClick={() => navigate(`/projects/${id}/mentor`)} style={{ background: 'var(--info)', color: 'white', padding: '0.5rem 1rem', borderRadius: 'var(--radius-sm)' }}>
+    <motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit" style={{ position: 'relative' }}>
+      {/* Background Glows */}
+      <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '500px', height: '500px', background: 'var(--primary)', filter: 'blur(250px)', opacity: 0.1, borderRadius: '50%', zIndex: -1, pointerEvents: 'none' }} />
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <motion.button whileHover={{ x: -5 }} onClick={() => navigate('/projects')} style={{ background: 'transparent', color: 'var(--text-secondary)', padding: 0 }}>&larr; Back to Projects</motion.button>
+        <motion.button whileHover={{ scale: 1.05, boxShadow: 'var(--shadow-glow)' }} whileTap={{ scale: 0.95 }} onClick={() => navigate(`/projects/${id}/mentor`)} style={{ background: 'linear-gradient(45deg, var(--info), var(--primary))', color: 'white', padding: '0.75rem 1.5rem', borderRadius: 'var(--radius-full)', fontWeight: 600 }}>
           Ask AI Mentor
-        </button>
+        </motion.button>
       </div>
       
-      <div style={{ background: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h1>{project.title}</h1>
-          <span style={{ background: 'var(--primary)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-full)', height: 'fit-content' }}>
+      <motion.div variants={pageVariants} className="glass-card" style={{ padding: '2.5rem', borderRadius: 'var(--radius-lg)', marginBottom: '3rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--primary)' }}>{project.title}</h1>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: '1rem', maxWidth: '800px' }}>{project.description || 'No description.'}</p>
+          </div>
+          <span style={{ background: 'rgba(0, 240, 255, 0.1)', color: 'var(--primary)', border: '1px solid var(--primary-light)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', fontWeight: 600 }}>
             {project.status}
           </span>
         </div>
-        <p style={{ color: 'var(--text-secondary)', marginTop: '1rem' }}>{project.description || 'No description.'}</p>
-      </div>
+      </motion.div>
 
-      <h2>Tasks</h2>
+      <motion.h2 variants={pageVariants} style={{ fontSize: '2rem', marginBottom: '1.5rem' }}>Tasks</motion.h2>
       
-      <form onSubmit={handleAddTask} style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', marginTop: '1rem' }}>
+      <motion.form variants={pageVariants} onSubmit={handleAddTask} className="glass-card" style={{ display: 'flex', gap: '1rem', marginBottom: '3rem', padding: '1.5rem' }}>
         <input 
           type="text" 
           value={newTaskTitle} 
           onChange={e => setNewTaskTitle(e.target.value)} 
           placeholder="New task title..." 
-          style={{ flex: 1, padding: '0.75rem', background: 'var(--bg-input)', border: '1px solid var(--border-color)', color: 'white', borderRadius: 'var(--radius-sm)' }}
+          style={{ flex: 1, padding: '1rem', background: 'var(--bg-input)', border: '1px solid var(--border-color)', color: 'white', borderRadius: 'var(--radius-sm)', fontSize: '1rem' }}
         />
-        <button type="submit" style={{ padding: '0.75rem 1.5rem', background: 'var(--primary)', color: 'white', borderRadius: 'var(--radius-sm)' }}>Add Task</button>
-      </form>
+        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="submit" style={{ padding: '1rem 2rem', background: 'var(--primary)', color: 'var(--bg-main)', borderRadius: 'var(--radius-sm)', fontWeight: 600, fontSize: '1rem' }}>Add Task</motion.button>
+      </motion.form>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <motion.div variants={pageVariants} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         {tasks.map(task => (
-          <div key={task._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-card)', padding: '1rem', borderRadius: 'var(--radius-sm)', borderLeft: `4px solid ${task.status === 'COMPLETED' ? 'var(--success)' : 'var(--warning)'}` }}>
+          <motion.div key={task._id} whileHover={{ x: 5 }} className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem', borderLeft: `4px solid ${task.status === 'COMPLETED' ? 'var(--success)' : 'var(--warning)'}` }}>
             <div>
-              <h4 style={{ margin: 0, textDecoration: task.status === 'COMPLETED' ? 'line-through' : 'none', color: task.status === 'COMPLETED' ? 'var(--text-muted)' : 'inherit' }}>{task.title}</h4>
+              <h4 style={{ margin: 0, fontSize: '1.1rem', textDecoration: task.status === 'COMPLETED' ? 'line-through' : 'none', color: task.status === 'COMPLETED' ? 'var(--text-muted)' : 'var(--text-primary)' }}>{task.title}</h4>
             </div>
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
               <select 
                 value={task.status} 
                 onChange={e => updateTaskStatus(task._id, e.target.value)}
-                style={{ background: 'var(--bg-main)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', padding: '0.25rem', borderRadius: 'var(--radius-sm)' }}
+                style={{ background: 'var(--bg-input)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-sm)', outline: 'none' }}
               >
                 <option value="TODO">To Do</option>
                 <option value="IN_PROGRESS">In Progress</option>
                 <option value="COMPLETED">Completed</option>
               </select>
-              <button onClick={() => removeTask(task._id)} style={{ background: 'transparent', color: 'var(--danger)' }}>Delete</button>
+              <motion.button whileHover={{ color: '#ff0055', scale: 1.1 }} onClick={() => removeTask(task._id)} style={{ background: 'transparent', color: 'var(--text-muted)', fontWeight: 600 }}>Delete</motion.button>
             </div>
-          </div>
+          </motion.div>
         ))}
-        {tasks.length === 0 && <p style={{ color: 'var(--text-secondary)' }}>No tasks yet.</p>}
-      </div>
-    </div>
+        {tasks.length === 0 && <p style={{ color: 'var(--text-secondary)', padding: '2rem', textAlign: 'center', background: 'var(--bg-card)', borderRadius: 'var(--radius-md)' }}>No tasks yet.</p>}
+      </motion.div>
+    </motion.div>
   );
 }
