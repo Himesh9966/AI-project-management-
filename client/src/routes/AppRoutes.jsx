@@ -9,9 +9,10 @@
  */
 
 import React, { Suspense, lazy } from 'react';
-import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
+const Landing = lazy(() => import('../pages/Landing'));
 const Login = lazy(() => import('../pages/Login'));
 const Register = lazy(() => import('../pages/Register'));
 const Dashboard = lazy(() => import('../pages/Dashboard'));
@@ -21,27 +22,42 @@ const AIPlanner = lazy(() => import('../pages/AIPlanner'));
 const AIChat = lazy(() => import('../pages/AIChat'));
 
 const PageLoader = () => (
-  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh', color: 'var(--text-secondary)' }}>
-    <h2>Loading...</h2>
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'var(--bg-main)', color: 'var(--primary)' }}>
+    <h2 style={{ filter: 'drop-shadow(var(--shadow-glow))' }}>Loading...</h2>
   </div>
 );
 
-// Layout wrapper for authenticated pages (e.g. Navigation bar)
+// Layout wrapper for authenticated pages
 const ProtectedLayout = () => {
   const { user, loading } = useAuth();
   
-  if (loading) return <div>Loading Application...</div>;
+  if (loading) return <PageLoader />;
   if (!user) return <Navigate to="/login" replace />;
   
   return (
     <div className="app-layout">
-      {/* Navbar placeholder */}
-      <nav style={{ padding: '1rem 2rem', background: 'var(--bg-card)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2 style={{ color: 'var(--primary)', margin: 0 }}>🤖 AI Mentor</h2>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <a href="/dashboard">Dashboard</a>
-          <a href="/projects">Projects</a>
-          <a href="/ai-planner">AI Planner</a>
+      {/* Glassmorphism Navbar */}
+      <nav style={{ 
+        padding: '1rem 2rem', 
+        background: 'rgba(10, 10, 15, 0.7)', 
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)', 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        position: 'sticky',
+        top: 0,
+        zIndex: 50
+      }}>
+        <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+          <h2 style={{ color: 'var(--primary)', margin: 0, textShadow: '0 0 10px var(--primary-light)' }}>
+            🤖 AI Mentor
+          </h2>
+        </Link>
+        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+          <Link to="/dashboard" style={{ color: 'var(--text-primary)', fontWeight: 500 }}>Dashboard</Link>
+          <Link to="/projects" style={{ color: 'var(--text-primary)', fontWeight: 500 }}>Projects</Link>
+          <Link to="/ai-planner" style={{ color: 'var(--text-primary)', fontWeight: 500 }}>AI Planner</Link>
         </div>
       </nav>
       <main style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
@@ -54,12 +70,12 @@ const ProtectedLayout = () => {
 export default function AppRoutes() {
   const { user, loading } = useAuth();
 
-  if (loading) return <div>Initializing...</div>;
+  if (loading) return <PageLoader />;
 
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+        <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Landing />} />
         <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
         <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
 
@@ -71,7 +87,7 @@ export default function AppRoutes() {
           <Route path="/projects/:id/mentor" element={<AIChat />} />
         </Route>
         
-        <Route path="*" element={<div>404 Page Not Found</div>} />
+        <Route path="*" element={<div style={{ textAlign: 'center', padding: '5rem', color: 'var(--danger)' }}><h1>404 - Lost in Space</h1></div>} />
       </Routes>
     </Suspense>
   );
