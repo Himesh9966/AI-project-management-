@@ -45,10 +45,11 @@ app.get('/health', (req, res) => {
 });
 
 const authRoutes = require('./routes/authRoutes');
+const projectRoutes = require('./routes/projectRoutes');
 
 // 5. API Routes
 app.use('/api/auth', authRoutes);
-// app.use('/api/projects', projectRoutes);
+app.use('/api/projects', projectRoutes);
 // app.use('/api/tasks', taskRoutes);
 // app.use('/api/ai', aiRoutes);
 
