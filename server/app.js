@@ -44,8 +44,10 @@ app.get('/health', (req, res) => {
   });
 });
 
-// 5. Placeholder for API Routes (To be mounted in respective phases)
-// app.use('/api/auth', authRoutes);
+const authRoutes = require('./routes/authRoutes');
+
+// 5. API Routes
+app.use('/api/auth', authRoutes);
 // app.use('/api/projects', projectRoutes);
 // app.use('/api/tasks', taskRoutes);
 // app.use('/api/ai', aiRoutes);
