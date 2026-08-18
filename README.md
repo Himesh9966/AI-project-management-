@@ -69,6 +69,11 @@ This table maps the grading rubric directly to the codebase implementation for q
 | Concept | Where Used | File | Explanation |
 |---|---|---|---|
 | **HTTP status codes used correctly (0.2 pts • Backend & System Design)** | Controllers & Middleware | `server/utils/responseHelper.js` | Proper usage of HTTP status codes (200, 201, 400, 401, 403, 404, 409, 500) across all endpoints. |
+| **JavaScript — Event loop (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | Uses `setTimeout` to push non-blocking callbacks to the macro-task queue. |
+| **JavaScript — Promises vs callbacks (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | Demonstrates fetching data via legacy callbacks versus modern Promises. |
+| **JavaScript — async/await (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | Uses syntactic sugar over Promises to handle asynchronous operations cleanly. |
+| **JavaScript — Closures (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | An inner `increment` function capturing the `count` variable from its lexical scope. |
+| **JavaScript — Hoisting (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | Calling a function declaration before it appears in the code, proving it's hoisted. |
 | **LLM API Integration** | AI Controllers & Services | `server/services/aiService.js` | Direct integration with `@google/generative-ai` securely isolated in backend. |
 | **Prompt Engineering** | Prompt Modules | `server/prompts/` | System roles, context snapshotting, and strict JSON structural requirements. |
 | **Structured Outputs** | AI Planner / Subtasks | `server/prompts/projectPlannerPrompt.js` | LLM is instructed to bypass markdown and return raw, parseable JSON payloads. |
