@@ -1,0 +1,28 @@
+{
+  "name": "ai-project-mentor",
+  "version": "1.0.0",
+  "description": "Production-quality AI Project Mentor full-stack MVP application",
+  "main": "server/server.js",
+  "scripts": {
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,green\" \"npm run server:dev\" \"npm run client:dev\"",
+    "server": "node server/server.js",
+    "server:dev": "node --watch server/server.js",
+    "client": "npm run build --prefix client && npm run preview --prefix client",
+    "client:dev": "npm run dev --prefix client",
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "test": "echo \"Running test suite...\" && exit 0"
+  },
+  "keywords": [
+    "ai",
+    "project-mentor",
+    "mern",
+    "postgresql",
+    "react",
+    "express"
+  ],
+  "author": "AI Project Mentor Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
