@@ -69,11 +69,11 @@ This table maps the grading rubric directly to the codebase implementation for q
 | Concept | Where Used | File | Explanation |
 |---|---|---|---|
 | **HTTP status codes used correctly (0.2 pts • Backend & System Design)** | Controllers & Middleware | `server/utils/responseHelper.js` | Proper usage of HTTP status codes (200, 201, 400, 401, 403, 404, 409, 500) across all endpoints. |
-| **JavaScript — Event loop (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | Uses `setTimeout` to push non-blocking callbacks to the macro-task queue. |
-| **JavaScript — Promises vs callbacks (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | Demonstrates fetching data via legacy callbacks versus modern Promises. |
-| **JavaScript — async/await (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | Uses syntactic sugar over Promises to handle asynchronous operations cleanly. |
-| **JavaScript — Closures (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | An inner `increment` function capturing the `count` variable from its lexical scope. |
-| **JavaScript — Hoisting (0.1 pts • Frontend)** | JS Concepts Utility | `client/src/utils/jsConcepts.js` | Calling a function declaration before it appears in the code, proving it's hoisted. |
+| **JavaScript — Event loop (0.1 pts • Frontend)** | JS Concepts Folder | `client/src/concepts/EventLoop.js` | Uses `setTimeout` to push non-blocking callbacks to the macro-task queue. |
+| **JavaScript — Promises vs callbacks (0.1 pts • Frontend)** | JS Concepts Folder | `client/src/concepts/PromisesVsCallbacks.js` | Demonstrates fetching data via legacy callbacks versus modern Promises. |
+| **JavaScript — async/await (0.1 pts • Frontend)** | JS Concepts Folder | `client/src/concepts/AsyncAwait.js` | Uses syntactic sugar over Promises to handle asynchronous operations cleanly. |
+| **JavaScript — Closures (0.1 pts • Frontend)** | JS Concepts Folder | `client/src/concepts/Closures.js` | An inner `increment` function capturing the `count` variable from its lexical scope. |
+| **JavaScript — Hoisting (0.1 pts • Frontend)** | JS Concepts Folder | `client/src/concepts/Hoisting.js` | Calling a function declaration before it appears in the code, proving it's hoisted. |
 | **SQL JOINs (0.2 pts • SQL (Postgres))** | PostgreSQL Schema | `server/sql/schema.sql` | `user_projects_view` utilizes an `INNER JOIN` to fetch project owner details. |
 | **Normalization basics (0.2 pts • SQL (Postgres))** | PostgreSQL Schema | `server/sql/schema.sql` | Schema is designed up to 3NF, removing transitive dependencies and ensuring atomic values. |
 | **ORM usage (Prisma/Sequelize) (0.2 pts • SQL (Postgres))** | Database Configuration | `server/prisma/schema.prisma` | Full Prisma schema implementation mapping to the PostgreSQL database for ORM-based access. |
