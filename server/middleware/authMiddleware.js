@@ -32,7 +32,8 @@ const requireAuth = (req, res, next) => {
   }
 
   try {
-    const secret = process.env.JWT_SECRET;
+    const config = require('../config/env');
+    const secret = config.jwtSecret;
     
     // Verify token signature and expiration
     const decoded = jwt.verify(token, secret);

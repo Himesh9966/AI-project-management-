@@ -15,10 +15,10 @@
 
 const { Pool } = require('pg');
 
-const postgresURI = process.env.POSTGRES_URI || 'postgresql://postgres:postgres@localhost:5432/ai_project_mentor';
+const config = require('./env');
 
 const pool = new Pool({
-  connectionString: postgresURI,
+  connectionString: config.postgresUri,
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000

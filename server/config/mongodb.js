@@ -17,6 +17,8 @@ const mongoose = require('mongoose');
 
 let isConnected = false;
 
+const config = require('./env');
+
 /**
  * Connect to MongoDB instance
  * @returns {Promise<typeof mongoose>}
@@ -27,7 +29,7 @@ const connectMongoDB = async () => {
     return mongoose;
   }
 
-  const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/ai_project_mentor';
+  const mongoURI = config.mongoUri || 'mongodb://127.0.0.1:27017/ai_project_mentor';
 
   try {
     const conn = await mongoose.connect(mongoURI, {

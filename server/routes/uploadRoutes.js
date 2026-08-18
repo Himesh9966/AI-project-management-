@@ -1,14 +1,14 @@
 const express = require('express');
 const multer = require('multer');
 const router = express.Router();
-const { authMiddleware } = require('../middleware/authMiddleware');
+const { requireAuth } = require('../middleware/authMiddleware');
 
 // File upload handling
 // Using multer to parse multipart/form-data requests
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-router.post('/', authMiddleware, upload.single('file'), (req, res) => {
+router.post('/', requireAuth, upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: 'No file uploaded' });
   }
