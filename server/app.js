@@ -46,11 +46,14 @@ app.get('/health', (req, res) => {
 
 const authRoutes = require('./routes/authRoutes');
 const projectRoutes = require('./routes/projectRoutes');
+const taskRoutes = require('./routes/taskRoutes');
+const standaloneTaskRoutes = require('./routes/standaloneTaskRoutes');
 
 // 5. API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
-// app.use('/api/tasks', taskRoutes);
+app.use('/api/projects/:projectId/tasks', taskRoutes);
+app.use('/api/tasks', standaloneTaskRoutes);
 // app.use('/api/ai', aiRoutes);
 
 // 6. 404 Route Handler
