@@ -15,7 +15,6 @@ const Task = require('../models/Task');
 const { getPlannerPrompt } = require('../prompts/projectPlannerPrompt');
 const { getMentorContext } = require('../prompts/mentorPrompt');
 const { getSubtaskPrompt } = require('../prompts/subtaskPrompt');
-const { sendSuccess, sendError } = require('../utils/responseHelper');
 
 /**
  * @route   POST /api/ai/plan
@@ -25,7 +24,7 @@ const generatePlan = async (req, res, next) => {
   try {
     const { projectIdea } = req.body;
     if (!projectIdea) {
-      return sendError(res, 400, 'Project idea is required.');
+      return res.status(400).json({ success: false, message: 'Project idea is required.' });
     }
 
     const prompt = getPlannerPrompt(projectIdea);
@@ -41,10 +40,10 @@ const generatePlan = async (req, res, next) => {
     });
     await plan.save();
 
-    return sendSuccess(res, 201, 'AI Plan generated successfully', { plan });
+    return res.status(201).json({ success: true, message: 'AI Plan generated successfully', data: { plan } });
   } catch (error) {
     if (error.message.includes('LLM_API_KEY')) {
-      return sendError(res, 503, 'AI features are currently unavailable. Please check backend API keys.');
+      return res.status(503).json({ success: false, message: 'AI features are currently unavailable. Please check backend API keys.' });
     }
     next(error);
   }
@@ -57,12 +56,12 @@ const generatePlan = async (req, res, next) => {
 const generateSubtasks = async (req, res, next) => {
   try {
     const { taskId, taskDescription } = req.body;
-    if (!taskId) return sendError(res, 400, 'Task title/ID is required.');
+    if (!taskId) return res.status(400).json({ success: false, message: 'Task title/ID is required.' });
 
     const prompt = getSubtaskPrompt(taskId, taskDescription);
     const subtasks = await aiService.generateStructuredJSON(prompt);
 
-    return sendSuccess(res, 200, 'Subtasks generated successfully', subtasks); // subtasks contains { subtasks: [...] }
+    return res.status(200).json({ success: true, message: 'Subtasks generated successfully', data: subtasks }); // subtasks contains { subtasks: [...] }
   } catch (error) {
     next(error);
   }
@@ -76,12 +75,12 @@ const askMentor = async (req, res, next) => {
   try {
     const { projectId, message } = req.body;
     if (!projectId || !message) {
-      return sendError(res, 400, 'Project ID and message are required.');
+      return res.status(400).json({ success: false, message: 'Project ID and message are required.' });
     }
 
     // 1. Gather Project Context
     const project = await Project.findOne({ _id: projectId, owner: req.user.id });
-    if (!project) return sendError(res, 404, 'Project not found');
+    if (!project) return res.status(404).json({ success: false, message: 'Project not found' });
     const tasks = await Task.find({ project: projectId });
 
     // 2. Build Context Prompt
@@ -116,7 +115,7 @@ const askMentor = async (req, res, next) => {
     conversation.messages.push({ role: 'model', content: mentorReply });
     await conversation.save();
 
-    return sendSuccess(res, 200, 'Mentor responded', { reply: mentorReply, conversationId: conversation._id });
+    return res.status(200).json({ success: true, message: 'Mentor responded', data: { reply: mentorReply, conversationId: conversation._id } });
   } catch (error) {
     next(error);
   }
@@ -129,7 +128,7 @@ const askMentor = async (req, res, next) => {
 const getSavedPlans = async (req, res, next) => {
   try {
     const plans = await AIPlan.find({ createdBy: req.user.id }).sort({ createdAt: -1 });
-    return sendSuccess(res, 200, 'Plans retrieved', { plans });
+    return res.status(200).json({ success: true, message: 'Plans retrieved', data: { plans } });
   } catch (error) {
     next(error);
   }

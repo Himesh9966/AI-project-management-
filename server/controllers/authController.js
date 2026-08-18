@@ -16,7 +16,6 @@
 
 const bcrypt = require('bcryptjs');
 const generateToken = require('../utils/generateToken');
-const { sendSuccess, sendError } = require('../utils/responseHelper');
 const { findUserByEmail, createUser, findUserById } = require('../sql/queries');
 
 /**
@@ -34,13 +33,13 @@ const registerUser = async (req, res, next) => {
     }
 
     if (password.length < 6) {
-      return sendError(res, 400, 'Password must be at least 6 characters long.');
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long.' });
     }
 
     // 2. Check if user already exists
     const existingUser = await findUserByEmail(email);
     if (existingUser) {
-      return sendError(res, 409, 'User with this email already exists.');
+      return res.status(409).json({ success: false, message: 'User with this email already exists.' });
     }
 
     // 3. Hash password securely
@@ -55,7 +54,7 @@ const registerUser = async (req, res, next) => {
     const token = generateToken(newUser.id, newUser.role);
 
     // 6. Return success response (excluding password hash)
-    return sendSuccess(res, 201, 'User registered successfully', {
+    return res.status(201).json({ success: true, message: 'User registered successfully', data: {
       user: {
         id: newUser.id,
         name: newUser.name,
@@ -63,7 +62,7 @@ const registerUser = async (req, res, next) => {
         role: newUser.role
       },
       token
-    });
+    } });
   } catch (error) {
     next(error); // Pass to global error middleware
   }
@@ -79,25 +78,25 @@ const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return sendError(res, 400, 'Please provide email and password.');
+      return res.status(400).json({ success: false, message: 'Please provide email and password.' });
     }
 
     // 1. Fetch user by email
     const user = await findUserByEmail(email);
     if (!user) {
-      return sendError(res, 401, 'Invalid credentials.');
+      return res.status(401).json({ success: false, message: 'Invalid credentials.' });
     }
 
     // 2. Verify password
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
-      return sendError(res, 401, 'Invalid credentials.');
+      return res.status(401).json({ success: false, message: 'Invalid credentials.' });
     }
 
     // 3. Generate Token
     const token = generateToken(user.id, user.role);
 
-    return sendSuccess(res, 200, 'Login successful', {
+    return res.status(200).json({ success: true, message: 'Login successful', data: {
       user: {
         id: user.id,
         name: user.name,
@@ -105,7 +104,7 @@ const loginUser = async (req, res, next) => {
         role: user.role
       },
       token
-    });
+    } });
   } catch (error) {
     next(error);
   }
@@ -123,10 +122,10 @@ const getMe = async (req, res, next) => {
     
     const user = await findUserById(userId);
     if (!user) {
-      return sendError(res, 404, 'User profile not found.');
+      return res.status(404).json({ success: false, message: 'User profile not found.' });
     }
 
-    return sendSuccess(res, 200, 'Profile retrieved successfully', { user });
+    return res.status(200).json({ success: true, message: 'Profile retrieved successfully', data: { user } });
   } catch (error) {
     next(error);
   }

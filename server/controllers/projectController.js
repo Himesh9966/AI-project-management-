@@ -13,7 +13,6 @@
  */
 
 const projectService = require('../services/projectService');
-const { sendSuccess, sendError } = require('../utils/responseHelper');
 
 /**
  * @route   GET /api/projects
@@ -23,7 +22,7 @@ const { sendSuccess, sendError } = require('../utils/responseHelper');
 const getProjects = async (req, res, next) => {
   try {
     const projects = await projectService.getProjectsByUserId(req.user.id);
-    return sendSuccess(res, 200, 'Projects retrieved successfully', { projects });
+    return res.status(200).json({ success: true, message: 'Projects retrieved successfully', data: { projects } });
   } catch (error) {
     next(error);
   }
@@ -37,7 +36,7 @@ const getProjects = async (req, res, next) => {
 const createProject = async (req, res, next) => {
   try {
     const project = await projectService.createProject(req.body, req.user.id);
-    return sendSuccess(res, 201, 'Project created successfully', { project });
+    return res.status(201).json({ success: true, message: 'Project created successfully', data: { project } });
   } catch (error) {
     next(error);
   }
@@ -52,9 +51,9 @@ const getProjectById = async (req, res, next) => {
   try {
     const project = await projectService.getProjectById(req.params.id, req.user.id);
     if (!project) {
-      return sendError(res, 404, 'Project not found');
+      return res.status(404).json({ success: false, message: 'Project not found' });
     }
-    return sendSuccess(res, 200, 'Project retrieved successfully', { project });
+    return res.status(200).json({ success: true, message: 'Project retrieved successfully', data: { project } });
   } catch (error) {
     next(error);
   }
@@ -69,9 +68,9 @@ const updateProject = async (req, res, next) => {
   try {
     const project = await projectService.updateProject(req.params.id, req.user.id, req.body);
     if (!project) {
-      return sendError(res, 404, 'Project not found');
+      return res.status(404).json({ success: false, message: 'Project not found' });
     }
-    return sendSuccess(res, 200, 'Project updated successfully', { project });
+    return res.status(200).json({ success: true, message: 'Project updated successfully', data: { project } });
   } catch (error) {
     next(error);
   }
@@ -86,9 +85,9 @@ const deleteProject = async (req, res, next) => {
   try {
     const project = await projectService.deleteProject(req.params.id, req.user.id);
     if (!project) {
-      return sendError(res, 404, 'Project not found');
+      return res.status(404).json({ success: false, message: 'Project not found' });
     }
-    return sendSuccess(res, 200, 'Project deleted successfully', { project });
+    return res.status(200).json({ success: true, message: 'Project deleted successfully', data: { project } });
   } catch (error) {
     next(error);
   }

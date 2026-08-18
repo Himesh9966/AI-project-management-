@@ -9,7 +9,6 @@
  */
 
 const taskService = require('../services/taskService');
-const { sendSuccess, sendError } = require('../utils/responseHelper');
 
 /**
  * @route   GET /api/projects/:projectId/tasks
@@ -19,10 +18,10 @@ const { sendSuccess, sendError } = require('../utils/responseHelper');
 const getTasks = async (req, res, next) => {
   try {
     const tasks = await taskService.getTasksByProject(req.params.projectId, req.user.id);
-    return sendSuccess(res, 200, 'Tasks retrieved successfully', { tasks });
+    return res.status(200).json({ success: true, message: 'Tasks retrieved successfully', data: { tasks } });
   } catch (error) {
     if (error.message.includes('unauthorized')) {
-      return sendError(res, 403, error.message);
+      return res.status(403).json({ success: false, message: error.message });
     }
     next(error);
   }
@@ -36,10 +35,10 @@ const getTasks = async (req, res, next) => {
 const createTask = async (req, res, next) => {
   try {
     const task = await taskService.createTask(req.params.projectId, req.user.id, req.body);
-    return sendSuccess(res, 201, 'Task created successfully', { task });
+    return res.status(201).json({ success: true, message: 'Task created successfully', data: { task } });
   } catch (error) {
     if (error.message.includes('unauthorized')) {
-      return sendError(res, 403, error.message);
+      return res.status(403).json({ success: false, message: error.message });
     }
     next(error);
   }
@@ -54,9 +53,9 @@ const updateTask = async (req, res, next) => {
   try {
     const task = await taskService.updateTask(req.params.id, req.user.id, req.body);
     if (!task) {
-      return sendError(res, 404, 'Task not found or unauthorized');
+      return res.status(404).json({ success: false, message: 'Task not found or unauthorized' });
     }
-    return sendSuccess(res, 200, 'Task updated successfully', { task });
+    return res.status(200).json({ success: true, message: 'Task updated successfully', data: { task } });
   } catch (error) {
     next(error);
   }
@@ -71,9 +70,9 @@ const deleteTask = async (req, res, next) => {
   try {
     const task = await taskService.deleteTask(req.params.id, req.user.id);
     if (!task) {
-      return sendError(res, 404, 'Task not found or unauthorized');
+      return res.status(404).json({ success: false, message: 'Task not found or unauthorized' });
     }
-    return sendSuccess(res, 200, 'Task deleted successfully', { task });
+    return res.status(200).json({ success: true, message: 'Task deleted successfully', data: { task } });
   } catch (error) {
     next(error);
   }
