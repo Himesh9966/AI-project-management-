@@ -12,7 +12,7 @@ import { useProjects } from '../hooks/useProjects';
 import { useNavigate } from 'react-router-dom';
 
 export default function Projects() {
-  const { projects, loading, addProject } = useProjects();
+  const { projects, loading, addProject, removeProject } = useProjects();
   const [showForm, setShowForm] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDesc, setNewDesc] = useState('');
@@ -24,6 +24,13 @@ export default function Projects() {
     setShowForm(false);
     setNewTitle('');
     setNewDesc('');
+  };
+
+  const handleDelete = async (e, id) => {
+    e.stopPropagation();
+    if(window.confirm('Are you sure you want to delete this project?')) {
+      await removeProject(id);
+    }
   };
 
   if (loading) return <div>Loading Projects...</div>;
@@ -56,9 +63,18 @@ export default function Projects() {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
         {projects.map(project => (
-          <div key={project._id} onClick={() => navigate(`/projects/${project._id}`)} style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: 'var(--radius-md)', cursor: 'pointer', border: '1px solid var(--border-color)' }}>
-            <h3 style={{ marginBottom: '0.5rem' }}>{project.title}</h3>
-            <p style={{ color: 'var(--text-secondary)' }}>Status: {project.status}</p>
+          <div key={project._id} style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', position: 'relative' }}>
+            <div onClick={() => navigate(`/projects/${project._id}`)} style={{ cursor: 'pointer' }}>
+              <h3 style={{ marginBottom: '0.5rem', paddingRight: '2rem' }}>{project.title}</h3>
+              <p style={{ color: 'var(--text-secondary)' }}>Status: {project.status}</p>
+            </div>
+            <button 
+              onClick={(e) => handleDelete(e, project._id)}
+              style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'transparent', color: 'var(--danger, #ff4444)', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: '0' }}
+              title="Delete Project"
+            >
+              🗑️
+            </button>
           </div>
         ))}
       </div>

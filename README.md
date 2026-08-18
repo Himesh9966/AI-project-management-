@@ -5,6 +5,11 @@ A production-quality MERN stack application with PostgreSQL and Generative AI in
 ## Project Overview
 AI Project Mentor is a full-stack Minimum Viable Product (MVP) that provides intelligent project planning, task breakdown, and technical mentorship. It leverages a dual-database architecture (MongoDB for agile document storage and PostgreSQL for strict relational schemas) and integrates with Google Generative AI to act as a virtual software architect.
 
+## Project Documentation
+- [Product Requirements Document (PRD)](./docs/PRD.md)
+- [High-Level Design (HLD)](./docs/HLD.md)
+- [Low-Level Design (LLD)](./docs/LLD.md)
+
 ---
 
 ## Architecture & Tech Stack
