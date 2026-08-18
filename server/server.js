@@ -20,25 +20,36 @@ const dotenv = require('dotenv');
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = require('./app');
+const { connectMongoDB } = require('./config/mongodb');
+const { connectPostgres } = require('./config/postgres');
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
-const server = app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`🚀 AI Project Mentor Server running on port ${PORT}`);
-  console.log(`🌐 Healthcheck: http://localhost:${PORT}/health`);
-  console.log(`⚙️  Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`====================================================`);
-});
+// Initialize Database Connections
+const startServer = async () => {
+  console.log('⏳ Initializing Database Connections...');
+  await connectMongoDB();
+  await connectPostgres();
 
-// Handle graceful process termination
-const gracefulShutdown = (signal) => {
-  console.log(`\nReceived ${signal}. Shutting down gracefully...`);
-  server.close(() => {
-    console.log('HTTP server closed.');
-    process.exit(0);
+  const server = app.listen(PORT, () => {
+    console.log(`====================================================`);
+    console.log(`🚀 AI Project Mentor Server running on port ${PORT}`);
+    console.log(`🌐 Healthcheck: http://localhost:${PORT}/health`);
+    console.log(`⚙️  Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`====================================================`);
   });
+
+  // Handle graceful process termination
+  const gracefulShutdown = (signal) => {
+    console.log(`\nReceived ${signal}. Shutting down gracefully...`);
+    server.close(() => {
+      console.log('HTTP server closed.');
+      process.exit(0);
+    });
+  };
+
+  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 };
 
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+startServer();
