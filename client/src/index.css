@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 5% 96%;
+    --foreground: 240 10% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    /* Metallic Dark Theme */
+    --background: 240 5% 6%;
+    --foreground: 0 0% 95%;
+
+    --card: 240 4% 10%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 240 4% 10%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    /* Force dark mode for metallic look if preferred, but we will just apply .dark class dynamically or default to it */
+  }
+  
+  html {
+    @apply dark; /* Force dark mode for metallic aesthetic by default */
+  }
+}
+
+/* Custom Metallic Utilities */
+@layer utilities {
+  .metallic-panel {
+    @apply bg-card/80 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)];
+  }
+  
+  .metallic-btn {
+    @apply relative overflow-hidden bg-gradient-to-b from-[#2a2a2a] to-[#1a1a1a] text-white border border-[#444] shadow-[0_2px_10px_rgba(0,0,0,0.2)] hover:border-[#666] transition-all;
+  }
+
+  .metallic-btn::after {
+    content: '';
+    @apply absolute inset-0 bg-[linear-gradient(105deg,transparent_20%,rgba(255,255,255,0.05)_25%,transparent_30%)] opacity-0 transition-opacity duration-300;
+  }
+
+  .metallic-btn:hover::after {
+    @apply opacity-100;
+  }
+}
