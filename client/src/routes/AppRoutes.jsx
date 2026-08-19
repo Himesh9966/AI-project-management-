@@ -23,8 +23,8 @@ const AIPlanner = lazy(() => import('../pages/AIPlanner'));
 const AIChat = lazy(() => import('../pages/AIChat'));
 
 const PageLoader = () => (
-  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'var(--bg-main)', color: 'var(--primary)' }}>
-    <h2 style={{ filter: 'drop-shadow(var(--shadow-glow))' }}>Loading...</h2>
+  <div className="flex justify-center items-center h-screen bg-[#050505] text-white">
+    <h2 className="animate-pulse tracking-widest uppercase text-sm font-semibold text-gray-400">Loading...</h2>
   </div>
 );
 
@@ -36,32 +36,21 @@ const ProtectedLayout = () => {
   if (!user) return <Navigate to="/login" replace />;
   
   return (
-    <div className="app-layout">
-      {/* Glassmorphism Navbar */}
-      <nav style={{ 
-        padding: '1rem 2rem', 
-        background: 'rgba(10, 10, 15, 0.7)', 
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.05)', 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50
-      }}>
-        <Link to="/dashboard" style={{ textDecoration: 'none' }}>
-          <h2 style={{ color: 'var(--primary)', margin: 0, textShadow: '0 0 10px var(--primary-light)' }}>
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
+      {/* Glassmorphism/Metallic Navbar */}
+      <nav className="sticky top-0 z-50 px-6 py-4 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/5 flex justify-between items-center shadow-sm">
+        <Link to="/dashboard" className="no-underline">
+          <h2 className="text-white text-xl font-semibold m-0 tracking-tight">
             AI Mentor
           </h2>
         </Link>
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <Link to="/dashboard" style={{ color: 'var(--text-primary)', fontWeight: 500 }}>Dashboard</Link>
-          <Link to="/projects" style={{ color: 'var(--text-primary)', fontWeight: 500 }}>Projects</Link>
-          <Link to="/ai-planner" style={{ color: 'var(--text-primary)', fontWeight: 500 }}>AI Planner</Link>
+        <div className="flex gap-6 items-center">
+          <Link to="/dashboard" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Dashboard</Link>
+          <Link to="/projects" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Projects</Link>
+          <Link to="/ai-planner" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">AI Planner</Link>
         </div>
       </nav>
-      <main style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
+      <main className="flex-1 w-full max-w-7xl mx-auto p-8 relative">
         <Outlet />
       </main>
     </div>
@@ -90,7 +79,7 @@ export default function AppRoutes() {
             <Route path="/projects/:id/mentor" element={<AIChat />} />
           </Route>
           
-          <Route path="*" element={<div style={{ textAlign: 'center', padding: '5rem', color: 'var(--danger)' }}><h1>404 - Lost in Space</h1></div>} />
+          <Route path="*" element={<div className="text-center p-20 text-red-500 font-bold text-2xl"><h1>404 - Lost in Space</h1></div>} />
         </Routes>
       </AnimatePresence>
     </Suspense>

@@ -1,154 +1,102 @@
-/**
- * CONCEPTS USED:
- * - CSS Custom Properties (Design Tokens)
- * - Modern Typography & Fluid Layouts
- * - Glassmorphism & Micro-interactions
- * - Responsive CSS Grid & Flexbox
- *
- * PURPOSE:
- * Defines global design tokens, base resets, and utility classes for AI Project Mentor.
- *
- * RESPONSIBILITY:
- * Establishes color schemes, typography, spacing, and reusable theme styles.
- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;600&display=swap');
+@layer base {
+  :root {
+    --background: 240 5% 96%;
+    --foreground: 240 10% 10%;
 
-:root {
-  /* Neon Palette */
-  --primary: #00f0ff;
-  --primary-hover: #00c3ff;
-  --primary-light: rgba(0, 240, 255, 0.15);
-  --primary-dark: #0077ff;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
 
-  --secondary: #ff0055;
-  --secondary-hover: #ff003c;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    /* Metallic Dark Theme */
+    --background: 240 5% 6%;
+    --foreground: 0 0% 95%;
+
+    --card: 240 4% 10%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 240 4% 10%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    /* Force dark mode for metallic look if preferred, but we will just apply .dark class dynamically or default to it */
+  }
   
-  --accent: #7000ff;
-  --accent-glow: rgba(112, 0, 255, 0.4);
+  html {
+    @apply dark; /* Force dark mode for metallic aesthetic by default */
+  }
+}
 
-  --success: #00ffaa;
-  --warning: #ffaa00;
-  --danger: #ff0055;
-  --info: #00bbff;
-
-  /* Deep Space Neutrals */
-  --bg-main: #050508;
-  --bg-surface: #0a0a0f;
-  --bg-card: rgba(15, 15, 25, 0.65);
-  --bg-card-hover: rgba(25, 25, 40, 0.75);
-  --bg-input: rgba(0, 0, 0, 0.5);
+/* Custom Metallic Utilities */
+@layer utilities {
+  .metallic-panel {
+    @apply bg-card/80 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)];
+  }
   
-  /* Borders and Glass */
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-focus: var(--primary);
-  --glass-blur: blur(16px);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.05);
+  .metallic-btn {
+    @apply relative overflow-hidden bg-gradient-to-b from-[#2a2a2a] to-[#1a1a1a] text-white border border-[#444] shadow-[0_2px_10px_rgba(0,0,0,0.2)] hover:border-[#666] transition-all;
+  }
 
-  /* Typography */
-  --text-primary: #ffffff;
-  --text-secondary: #a0a5b5;
-  --text-muted: #5a6075;
+  .metallic-btn::after {
+    content: '';
+    @apply absolute inset-0 bg-[linear-gradient(105deg,transparent_20%,rgba(255,255,255,0.05)_25%,transparent_30%)] opacity-0 transition-opacity duration-300;
+  }
 
-  /* Elevation & Effects */
-  --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 15px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px var(--primary-light);
-  --shadow-neon: 0 0 10px var(--primary), 0 0 40px var(--primary), 0 0 80px var(--primary);
-  
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-xl: 32px;
-  --radius-full: 9999px;
-
-  /* Transitions */
-  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --font-family: 'Outfit', system-ui, -apple-system, sans-serif;
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: var(--font-family);
-  background-color: var(--bg-main);
-  background-image: 
-    radial-gradient(circle at 15% 50%, rgba(112, 0, 255, 0.05), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.05), transparent 25%);
-  color: var(--text-primary);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-a {
-  color: var(--primary);
-  text-decoration: none;
-  transition: var(--transition);
-}
-
-a:hover {
-  color: var(--primary-hover);
-  text-shadow: 0 0 8px var(--primary-light);
-}
-
-button {
-  cursor: pointer;
-  font-family: inherit;
-  border: none;
-  outline: none;
-}
-
-input, textarea, select {
-  font-family: inherit;
-  outline: none;
-}
-
-/* Glass Card Utility */
-.glass-card {
-  background: var(--bg-card);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
-  box-shadow: var(--shadow-md);
-  border-radius: var(--radius-lg);
-  transition: var(--transition);
-}
-
-.glass-card:hover {
-  background: var(--bg-card-hover);
-  box-shadow: var(--shadow-glow);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-main);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: var(--radius-full);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
+  .metallic-btn:hover::after {
+    @apply opacity-100;
+  }
 }
