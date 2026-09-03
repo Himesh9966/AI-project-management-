@@ -20,6 +20,7 @@ const config = require('./config/env');
 const app = require('./app');
 const { connectMongoDB } = require('./config/mongodb');
 const { connectPostgres } = require('./config/postgres');
+const { connectRedis } = require('./config/redis');
 
 const PORT = config.port;
 
@@ -28,6 +29,7 @@ const startServer = async () => {
   console.log('Initializing Database Connections...');
   await connectMongoDB();
   await connectPostgres();
+  await connectRedis();
 
   const server = app.listen(PORT, () => {
     console.log(`====================================================`);

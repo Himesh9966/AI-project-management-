@@ -13,7 +13,7 @@
  * and audit activity log recording via PostgreSQL.
  */
 
-const { query } = require('../config/postgres');
+const { query, pool } = require('../config/postgres');
 
 /**
  * 1. Find User By Email (Primary lookup for Authentication)
@@ -45,13 +45,31 @@ const findUserById = async (userId) => {
  * 3. Create New User
  */
 const createUser = async (name, email, passwordHash, role = 'STUDENT') => {
-  const sql = `
-    INSERT INTO users (name, email, password_hash, role)
-    VALUES ($1, $2, $3, $4)
-    RETURNING id, name, email, role, created_at;
-  `;
-  const result = await query(sql, [name.trim(), email.toLowerCase().trim(), passwordHash, role]);
-  return result.rows[0];
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const userSql = `
+      INSERT INTO users (name, email, password_hash, role)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id, name, email, role, created_at;
+    `;
+    const userResult = await client.query(userSql, [name.trim(), email.toLowerCase().trim(), passwordHash, role]);
+    const newUser = userResult.rows[0];
+
+    const logSql = `
+      INSERT INTO activity_logs (user_id, action, entity_type, metadata)
+      VALUES ($1, $2, $3, $4)
+    `;
+    await client.query(logSql, [newUser.id, 'REGISTERED_USER', 'AUTH', JSON.stringify({ ip: 'auto' })]);
+
+    await client.query('COMMIT');
+    return newUser;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 /**

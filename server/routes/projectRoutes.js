@@ -18,17 +18,18 @@ const projectController = require('../controllers/projectController');
 const { requireAuth } = require('../middleware/authMiddleware');
 const { validate } = require('../middleware/validationMiddleware');
 const { validateProject } = require('../validators/projectValidator');
+const { cacheMiddleware, clearCache } = require('../middleware/cacheMiddleware');
 
 // Protect all project routes with authentication middleware
 router.use(requireAuth);
 
 router.route('/')
-  .get(projectController.getProjects)
-  .post(validate(validateProject), projectController.createProject);
+  .get(cacheMiddleware('projects'), projectController.getProjects)
+  .post(clearCache('projects'), validate(validateProject), projectController.createProject);
 
 router.route('/:id')
-  .get(projectController.getProjectById)
-  .patch(validate(validateProject), projectController.updateProject)
-  .delete(projectController.deleteProject);
+  .get(cacheMiddleware('projects'), projectController.getProjectById)
+  .patch(clearCache('projects'), validate(validateProject), projectController.updateProject)
+  .delete(clearCache('projects'), projectController.deleteProject);
 
 module.exports = router;

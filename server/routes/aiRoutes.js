@@ -19,5 +19,6 @@ router.post('/plan', aiController.generatePlan);
 router.get('/plans', aiController.getSavedPlans);
 router.post('/subtasks', aiController.generateSubtasks);
 router.post('/mentor', aiController.askMentor);
+router.post('/model-problem', aiController.modelProblem);
 
 module.exports = router;
