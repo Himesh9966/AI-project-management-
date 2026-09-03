@@ -4,7 +4,10 @@ let redisClient;
 
 const connectRedis = async () => {
   redisClient = redis.createClient({
-    url: process.env.REDIS_URI || 'redis://localhost:6379'
+    url: process.env.REDIS_URI || 'redis://localhost:6379',
+    socket: {
+      reconnectStrategy: false // Do not retry indefinitely so the Promise rejects immediately
+    }
   });
 
   redisClient.on('error', (err) => console.error('Redis Client Error', err));
