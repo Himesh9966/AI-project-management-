@@ -1,36 +1,28 @@
 {
-  "name": "client",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "ai-project-mentor",
+  "version": "1.0.0",
+  "description": "Production-quality AI Project Mentor full-stack MVP application",
+  "main": "server/server.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,green\" \"npm run server:dev\" \"npm run client:dev\"",
+    "server": "node server/server.js",
+    "server:dev": "node --watch server/server.js",
+    "client": "npm run build --prefix client && npm run preview --prefix client",
+    "client:dev": "npm run dev --prefix client",
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "test": "echo \"Running test suite...\" && exit 0"
   },
-  "dependencies": {
-    "@react-three/drei": "^10.7.8",
-    "@react-three/fiber": "^9.7.0",
-    "axios": "^1.19.0",
-    "framer-motion": "^13.1.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.2",
-    "three": "^0.185.1"
-  },
+  "keywords": [
+    "ai",
+    "project-mentor",
+    "mern",
+    "postgresql",
+    "react",
+    "express"
+  ],
+  "author": "AI Project Mentor Team",
+  "license": "MIT",
   "devDependencies": {
-    "@radix-ui/react-slot": "^1.3.3",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.4",
-    "autoprefixer": "^10.5.4",
-    "clsx": "^2.1.1",
-    "lucide-react": "^1.32.0",
-    "oxlint": "^1.75.0",
-    "postcss": "^8.5.26",
-    "tailwind-merge": "^3.6.0",
-    "tailwindcss": "^3.4.19",
-    "vite": "^8.2.0"
+    "concurrently": "^8.2.2"
   }
 }

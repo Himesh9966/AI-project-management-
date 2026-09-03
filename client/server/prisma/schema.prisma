@@ -1,0 +1,60 @@
+// ORM usage (Prisma/Sequelize)
+// This Prisma schema demonstrates modern ORM usage for the PostgreSQL database,
+// mapping directly to the relational structures defined in server/sql/schema.sql
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URI")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(100)
+  email         String          @unique @db.VarChar(255)
+  password_hash String          @db.VarChar(255)
+  role          String          @default("STUDENT") @db.VarChar(50)
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @default(now())
+  projects      Project[]       @relation("ProjectOwner")
+  memberships   ProjectMember[]
+  activityLogs  ActivityLog[]
+}
+
+model Project {
+  id           Int             @id @default(autoincrement())
+  project_uuid String          @unique @db.VarChar(64)
+  title        String          @db.VarChar(200)
+  owner_id     Int
+  created_at   DateTime        @default(now())
+  owner        User            @relation("ProjectOwner", fields: [owner_id], references: [id], onDelete: Cascade)
+  members      ProjectMember[]
+  activityLogs ActivityLog[]
+}
+
+model ProjectMember {
+  id         Int      @id @default(autoincrement())
+  project_id Int
+  user_id    Int
+  role       String   @default("MEMBER") @db.VarChar(50)
+  joined_at  DateTime @default(now())
+  project    Project  @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([project_id, user_id])
+}
+
+model ActivityLog {
+  id          Int      @id @default(autoincrement())
+  user_id     Int?
+  project_id  Int?
+  action      String   @db.VarChar(100)
+  entity_type String   @db.VarChar(50)
+  metadata    Json?    @default("{}")
+  created_at  DateTime @default(now())
+  user        User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  project     Project? @relation(fields: [project_id], references: [id], onDelete: Cascade)
+}
