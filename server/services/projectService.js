@@ -11,7 +11,9 @@
  * Abstracts MongoDB Mongoose queries away from the controllers.
  */
 
+const mongoose = require('mongoose');
 const Project = require('../models/Project');
+const Task = require('../models/Task');
 
 const getProjectsByUserId = async (userId) => {
   return await Project.find({ owner: userId }).sort({ createdAt: -1 });
@@ -38,7 +40,28 @@ const updateProject = async (projectId, userId, updateData) => {
 };
 
 const deleteProject = async (projectId, userId) => {
-  return await Project.findOneAndDelete({ _id: projectId, owner: userId });
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  
+  try {
+    const project = await Project.findOneAndDelete({ _id: projectId, owner: userId }).session(session);
+    if (!project) {
+      await session.abortTransaction();
+      session.endSession();
+      return null;
+    }
+    
+    // Cascade delete tasks
+    await Task.deleteMany({ project: projectId }).session(session);
+    
+    await session.commitTransaction();
+    session.endSession();
+    return project;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
 };
 
 module.exports = {

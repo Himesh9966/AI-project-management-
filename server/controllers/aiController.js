@@ -15,6 +15,7 @@ const Task = require('../models/Task');
 const { getPlannerPrompt } = require('../prompts/projectPlannerPrompt');
 const { getMentorContext } = require('../prompts/mentorPrompt');
 const { getSubtaskPrompt } = require('../prompts/subtaskPrompt');
+const { getProblemModelingPrompt } = require('../prompts/problemModelingPrompt');
 
 /**
  * @route   POST /api/ai/plan
@@ -134,9 +135,33 @@ const getSavedPlans = async (req, res, next) => {
   }
 };
 
+/**
+ * @route   POST /api/ai/model-problem
+ * @desc    Generate a problem model from a description
+ */
+const modelProblem = async (req, res, next) => {
+  try {
+    const { problemDescription } = req.body;
+    if (!problemDescription) {
+      return res.status(400).json({ success: false, message: 'Problem description is required.' });
+    }
+
+    const prompt = getProblemModelingPrompt(problemDescription);
+    const generatedModel = await aiService.generateStructuredJSON(prompt);
+
+    return res.status(200).json({ success: true, message: 'Problem modeled successfully', data: { model: generatedModel } });
+  } catch (error) {
+    if (error.message.includes('LLM_API_KEY')) {
+      return res.status(503).json({ success: false, message: 'AI features are currently unavailable. Please check backend API keys.' });
+    }
+    next(error);
+  }
+};
+
 module.exports = {
   generatePlan,
   generateSubtasks,
   askMentor,
-  getSavedPlans
+  getSavedPlans,
+  modelProblem
 };

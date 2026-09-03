@@ -56,5 +56,6 @@ export const generateAIPlan = (projectIdea) => api.post('/ai/plan', { projectIde
 export const getSavedAIPlans = () => api.get('/ai/plans');
 export const askAIMentor = (projectId, message) => api.post('/ai/mentor', { projectId, message });
 export const generateSubtasks = (taskId, taskDescription) => api.post('/ai/subtasks', { taskId, taskDescription });
+export const modelProblem = (problemDescription) => api.post('/ai/model-problem', { problemDescription });
 
 export default api;
