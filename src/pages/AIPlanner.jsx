@@ -23,6 +23,7 @@ export default function AIPlanner() {
   const [idea, setIdea] = useState('');
   const [loading, setLoading] = useState(false);
   const [plan, setPlan] = useState(null);
+  const [model, setModel] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -39,6 +40,25 @@ export default function AIPlanner() {
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to generate plan.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleModelProblem = async (e) => {
+    e.preventDefault();
+    if (!idea.trim()) return;
+    
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.modelProblem(idea);
+      if (res.data.success) {
+        setModel(res.data.data.model);
+        setPlan(null); // Clear plan if showing model
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to model problem.');
     } finally {
       setLoading(false);
     }
@@ -93,15 +113,28 @@ export default function AIPlanner() {
           style={{ width: '100%', minHeight: '150px', padding: '1.5rem', background: 'var(--bg-input)', color: 'white', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', fontSize: '1.1rem' }}
           required
         />
-        <motion.button 
-          whileHover={!loading ? { scale: 1.02, boxShadow: 'var(--shadow-glow)' } : {}}
-          whileTap={!loading ? { scale: 0.98 } : {}}
-          type="submit" 
-          disabled={loading}
-          style={{ padding: '1rem 2rem', background: 'linear-gradient(45deg, var(--primary-dark), var(--primary))', color: '#fff', borderRadius: 'var(--radius-sm)', width: 'fit-content', opacity: loading ? 0.7 : 1, fontWeight: 600, fontSize: '1.1rem' }}
-        >
-          {loading ? 'Analyzing & Generating Plan...' : 'Generate Plan'}
-        </motion.button>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <motion.button 
+            whileHover={!loading ? { scale: 1.02, boxShadow: 'var(--shadow-glow)' } : {}}
+            whileTap={!loading ? { scale: 0.98 } : {}}
+            type="submit" 
+            disabled={loading}
+            style={{ padding: '1rem 2rem', background: 'linear-gradient(45deg, var(--primary-dark), var(--primary))', color: '#fff', borderRadius: 'var(--radius-sm)', width: 'fit-content', opacity: loading ? 0.7 : 1, fontWeight: 600, fontSize: '1.1rem' }}
+          >
+            {loading ? 'Analyzing...' : 'Generate Plan'}
+          </motion.button>
+
+          <motion.button 
+            whileHover={!loading ? { scale: 1.02, boxShadow: 'var(--shadow-glow)' } : {}}
+            whileTap={!loading ? { scale: 0.98 } : {}}
+            type="button" 
+            onClick={handleModelProblem}
+            disabled={loading}
+            style={{ padding: '1rem 2rem', background: 'linear-gradient(45deg, var(--accent), var(--secondary))', color: '#fff', borderRadius: 'var(--radius-sm)', width: 'fit-content', opacity: loading ? 0.7 : 1, fontWeight: 600, fontSize: '1.1rem' }}
+          >
+            {loading ? 'Modeling...' : 'Model Problem'}
+          </motion.button>
+        </div>
       </motion.form>
 
       {error && <motion.div variants={pageVariants} style={{ color: 'var(--danger)', marginBottom: '1rem', background: 'rgba(255,0,85,0.1)', padding: '1rem', borderRadius: 'var(--radius-sm)' }}>{error}</motion.div>}
@@ -143,6 +176,41 @@ export default function AIPlanner() {
               </motion.div>
             ))}
           </div>
+        </motion.div>
+      )}
+
+      {model && (
+        <motion.div variants={pageVariants} className="glass-card" style={{ padding: '3rem', marginTop: '2rem' }}>
+          <h2 style={{ fontSize: '2.5rem', color: 'var(--secondary)', marginBottom: '1rem' }}>{model.title}</h2>
+          
+          <h3 style={{ fontSize: '1.5rem', marginTop: '2rem', color: 'var(--text-primary)' }}>Actors</h3>
+          <ul>
+            {model.actors?.map((actor, idx) => (
+              <li key={idx} style={{ marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>
+                <strong style={{ color: 'var(--primary)' }}>{actor.name}:</strong> {actor.description}
+              </li>
+            ))}
+          </ul>
+
+          <h3 style={{ fontSize: '1.5rem', marginTop: '2rem', color: 'var(--text-primary)' }}>Entities</h3>
+          {model.entities?.map((entity, idx) => (
+            <div key={idx} style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: 'var(--radius-md)', marginBottom: '1rem' }}>
+              <h4 style={{ color: 'var(--accent)', fontSize: '1.2rem' }}>{entity.name}</h4>
+              <div style={{ marginTop: '0.5rem' }}>
+                <strong>Attributes:</strong> {entity.attributes?.join(', ')}
+              </div>
+              <div style={{ marginTop: '0.5rem' }}>
+                <strong>Relationships:</strong> {entity.relationships?.join(', ')}
+              </div>
+            </div>
+          ))}
+
+          <h3 style={{ fontSize: '1.5rem', marginTop: '2rem', color: 'var(--text-primary)' }}>Constraints</h3>
+          <ul>
+            {model.constraints?.map((constraint, idx) => (
+              <li key={idx} style={{ marginBottom: '0.5rem', color: 'var(--warning)' }}>{constraint}</li>
+            ))}
+          </ul>
         </motion.div>
       )}
     </motion.div>
